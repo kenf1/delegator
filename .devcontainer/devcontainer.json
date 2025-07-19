@@ -1,0 +1,22 @@
+{
+	"name": "Existing Dockerfile",
+	"build": {
+		"context": "..",
+		"dockerfile": "../Dockerfile"
+	},
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"golang.go",
+				"formulahendry.code-runner",
+				"gxl.git-graph-3"
+			],
+			"settings": {
+				"code-runner.enableAppInsights": false,
+				"chat.mcp.enabled": false,
+				"telemetry.editStats.enabled": false,
+				"telemetry.feedback.enabled": false
+			}
+		}
+	}
+}
