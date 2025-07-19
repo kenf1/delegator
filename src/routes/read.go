@@ -15,7 +15,7 @@ func ReadAllTasks(w http.ResponseWriter, r *http.Request) {
 	defer io.TasksMutex.RUnlock()
 
 	//copy to prevent race condition
-	res := make([]models.TaskEntry, len(test.Tasks))
+	res := make([]models.TaskDBRow, len(test.Tasks))
 	copy(res, test.Tasks)
 
 	w.Header().Set("Content-Type", "application/json")
@@ -35,7 +35,7 @@ func ReadSingleTask(w http.ResponseWriter, r *http.Request) {
 	io.TasksMutex.RLock()
 	defer io.TasksMutex.RUnlock()
 
-	var task models.TaskEntry
+	var task models.TaskDBRow
 	found := false
 	for _, t := range test.Tasks {
 		if t.Id == id {

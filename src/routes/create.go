@@ -10,10 +10,16 @@ import (
 )
 
 func CreateTask(w http.ResponseWriter, r *http.Request) {
-	var newTask models.TaskEntry
-	if err := json.NewDecoder(r.Body).Decode(&newTask); err != nil {
+	var reqBody models.TaskRequest
+	if err := json.NewDecoder(r.Body).Decode(&reqBody); err != nil {
 		http.Error(w, "invalid request body", http.StatusBadRequest)
 		return
+	}
+
+	newTask := models.TaskDBRow{
+		Id:     123,
+		Task:   reqBody.Task,
+		Status: reqBody.Status,
 	}
 
 	io.TasksMutex.Lock()

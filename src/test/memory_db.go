@@ -2,7 +2,7 @@ package test
 
 import "github.com/kenf1/delegator/src/models"
 
-var Tasks = []models.TaskEntry{
+var Tasks = []models.TaskDBRow{
 	{Id: 1, Task: "Spin up service", Status: "running"},
 	{Id: 2, Task: "Connect mainframe", Status: "queued"},
 	{Id: 3, Task: "Deploy update", Status: "completed"},

@@ -2,14 +2,16 @@
 	"name": "Existing Dockerfile",
 	"build": {
 		"context": "..",
-		"dockerfile": "../Dockerfile"
+		"dockerfile": "../setup/Dev.dockerfile"
 	},
 	"customizations": {
 		"vscode": {
 			"extensions": [
 				"golang.go",
 				"formulahendry.code-runner",
-				"gxl.git-graph-3"
+				"gxl.git-graph-3",
+				"yzhang.markdown-all-in-one",
+				"esbenp.prettier-vscode"
 			],
 			"settings": {
 				"code-runner.enableAppInsights": false,
