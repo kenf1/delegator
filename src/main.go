@@ -18,7 +18,9 @@ func main() {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", routes.HandleEntry)
 
-	mux.HandleFunc("GET /task", routes.ReadTasks)
+	mux.HandleFunc("GET /tasks", routes.ReadAllTasks)
+	mux.HandleFunc("GET /tasks/{id}", routes.ReadSingleTask)
+	mux.HandleFunc("POST /tasks", routes.CreateTask)
 
 	fmt.Printf("Server listening to %s:%s\n", serverAddr.Host, serverAddr.Port)
 	err1 := http.ListenAndServe(":"+serverAddr.Port, mux)
