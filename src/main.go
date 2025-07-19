@@ -1,0 +1,28 @@
+package main
+
+import (
+	"fmt"
+	"log"
+	"net/http"
+
+	"github.com/kenf1/delegator/src/io"
+	"github.com/kenf1/delegator/src/routes"
+)
+
+func main() {
+	serverAddr, err := io.ImportServerAddrWrapper("../.env")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	mux := http.NewServeMux()
+	mux.HandleFunc("/", routes.HandleEntry)
+
+	mux.HandleFunc("GET /task", routes.ReadTasks)
+
+	fmt.Printf("Server listening to %s:%s\n", serverAddr.Host, serverAddr.Port)
+	err1 := http.ListenAndServe(":"+serverAddr.Port, mux)
+	if err1 != nil {
+		log.Fatal(err1)
+	}
+}
