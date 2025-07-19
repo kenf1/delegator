@@ -3,8 +3,8 @@ package routes
 import (
 	"encoding/json"
 	"net/http"
-	"strconv"
 
+	"github.com/kenf1/delegator/src/db"
 	"github.com/kenf1/delegator/src/io"
 	"github.com/kenf1/delegator/src/models"
 	"github.com/kenf1/delegator/src/test"
@@ -26,27 +26,14 @@ func ReadAllTasks(w http.ResponseWriter, r *http.Request) {
 }
 
 func ReadSingleTask(w http.ResponseWriter, r *http.Request) {
-	id, err := strconv.Atoi(r.PathValue("id"))
-	if err != nil {
-		http.Error(w, "invalid id", http.StatusBadRequest)
-		return
-	}
+	id := r.PathValue("id")
 
 	io.TasksMutex.RLock()
 	defer io.TasksMutex.RUnlock()
 
-	var task models.TaskDBRow
-	found := false
-	for _, t := range test.Tasks {
-		if t.Id == id {
-			task = t
-			found = true
-			break
-		}
-	}
-
-	if !found {
-		http.Error(w, "task not found", http.StatusNotFound)
+	task, _, entryPresent := db.FindTaskByID(test.Tasks, id)
+	if !entryPresent {
+		http.Error(w, "entry not found", http.StatusBadRequest)
 		return
 	}
 

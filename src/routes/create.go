@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/google/uuid"
 	"github.com/kenf1/delegator/src/io"
 	"github.com/kenf1/delegator/src/models"
 	"github.com/kenf1/delegator/src/test"
@@ -17,7 +18,7 @@ func CreateTask(w http.ResponseWriter, r *http.Request) {
 	}
 
 	newTask := models.TaskDBRow{
-		Id:     123,
+		Id:     uuid.NewString(),
 		Task:   reqBody.Task,
 		Status: reqBody.Status,
 	}

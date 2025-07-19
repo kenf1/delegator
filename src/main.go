@@ -21,6 +21,9 @@ func main() {
 	mux.HandleFunc("GET /tasks", routes.ReadAllTasks)
 	mux.HandleFunc("GET /tasks/{id}", routes.ReadSingleTask)
 	mux.HandleFunc("POST /tasks", routes.CreateTask)
+	mux.HandleFunc("DELETE /tasks/{id}", routes.DeleteTask)
+	mux.HandleFunc("PUT /tasks", routes.PutTask)
+	mux.HandleFunc("PATCH /tasks", routes.PatchTask)
 
 	fmt.Printf("Server listening to %s:%s\n", serverAddr.Host, serverAddr.Port)
 	err1 := http.ListenAndServe(":"+serverAddr.Port, mux)
