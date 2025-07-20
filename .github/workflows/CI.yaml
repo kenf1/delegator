@@ -1,0 +1,30 @@
+name: Run CI
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+      - test
+  pull_request:
+
+permissions:
+  contents: write
+
+jobs:
+  golangci:
+    name: lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup latest go version
+        uses: actions/setup-go@v5
+        with:
+          go-version: stable
+
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v8
+        with:
+          version: v2.2.2
