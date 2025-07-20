@@ -1,3 +1,3 @@
 ## Delegator
 
-Delegator aka control plane
+Delegator aka main controller
