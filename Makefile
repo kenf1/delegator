@@ -32,8 +32,8 @@ test_jwt_decode:
 test_jwt: test_jwt_encode test_jwt_decode
 
 test_cors:
-	cd test/cors && sh test_cors.sh
+	$(call run_test,cors)
 
-test: test_tasks_crud test_jwt
+test: test_tasks_crud test_jwt test_cors
 	cd test && hurl --test entry.hurl
 	echo "Complete"

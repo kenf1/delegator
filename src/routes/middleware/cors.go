@@ -1,19 +1,49 @@
 package middleware
 
-import "net/http"
+import (
+	"net/http"
+	"strings"
 
-func AuthCorsMiddleware(next http.Handler) http.Handler {
+	"github.com/kenf1/delegator/src/models"
+)
+
+func createAllowedRequests(allowedMethods string) map[string]struct{} {
+	allowedRequests := make(map[string]struct{})
+	for _, method := range strings.Split(allowedMethods, ",") {
+		m := strings.TrimSpace(method)
+		if m != "" {
+			allowedRequests[m] = struct{}{}
+		}
+	}
+
+	return allowedRequests
+}
+
+func DefaultCorsMiddleware(
+	next http.Handler,
+	serverConfig models.ServerAddr,
+	allowedMethods string,
+) http.Handler {
+	allowedRequests := createAllowedRequests(allowedMethods)
+
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		allowedOrigin := "http://localhost:8181"
-
+		allowedOrigin := serverConfig.Host + ":" + serverConfig.Port
 		origin := r.Header.Get("Origin")
 
+		//origin must match allowed options
 		if origin != "" && origin != allowedOrigin {
 			http.Error(w, "Forbidden - invalid origin", http.StatusForbidden)
 			return
 		}
 
-		w.Header().Set("Access-Control-Allow-Methods", "GET, POST")
+		if r.Method != http.MethodOptions {
+			if _, ok := allowedRequests[r.Method]; !ok {
+				http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+				return
+			}
+		}
+
+		w.Header().Set("Access-Control-Allow-Methods", allowedMethods)
 		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 
 		if origin == allowedOrigin {
@@ -21,25 +51,13 @@ func AuthCorsMiddleware(next http.Handler) http.Handler {
 			w.Header().Set("Vary", "Origin")
 		}
 
+		//method must match allowed options
 		if r.Method == http.MethodOptions {
 			w.WriteHeader(http.StatusNoContent)
 			return
 		}
 
-		next.ServeHTTP(w, r)
-	})
-}
-
-func TasksCorsMiddleware(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Access-Control-Allow-Origin", "*")
-		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE")
-		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
-
-		if r.Method == http.MethodOptions {
-			return
-		}
-
+		//pass control to next handler
 		next.ServeHTTP(w, r)
 	})
 }
