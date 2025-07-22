@@ -21,8 +21,11 @@ func importServerAddr() (models.ServerAddr, error) {
 	host := os.Getenv("HOST")
 	port := os.Getenv("PORT")
 
-	if host == "" && port == "" {
-		return models.ServerAddr{}, fmt.Errorf("invalid host or port value")
+	if host == "" {
+		return models.ServerAddr{}, fmt.Errorf("host not found")
+	}
+	if port == "" {
+		return models.ServerAddr{}, fmt.Errorf("port not found")
 	}
 
 	return models.ServerAddr{
@@ -54,6 +57,7 @@ func serverAddrRemote() (models.ServerAddr, error) {
 	return res, nil
 }
 
+// attempt load remote -> attempt load local
 func ImportServerAddrWrapper(env_file string) (models.ServerAddr, error) {
 	runningVer, err := serverAddrRemote()
 	if err != nil {
@@ -66,4 +70,21 @@ func ImportServerAddrWrapper(env_file string) (models.ServerAddr, error) {
 	}
 
 	return runningVer, nil
+}
+
+func ImportAuthConfig() (models.AuthConfig, error) {
+	secretKey := os.Getenv("SECRET_KEY")
+	issuer := os.Getenv("ISSUER")
+
+	if secretKey == "" {
+		return models.AuthConfig{}, fmt.Errorf("secret key not found")
+	}
+	if issuer == "" {
+		return models.AuthConfig{}, fmt.Errorf("issuer not found")
+	}
+
+	return models.AuthConfig{
+		SecretKey: []byte(secretKey),
+		Issuer:    issuer,
+	}, nil
 }

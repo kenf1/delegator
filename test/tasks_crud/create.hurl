@@ -1,4 +1,4 @@
-POST http://localhost:8080/tasks
+POST http://localhost:8080/tasks/create
 Content-Type: application/json
 
 {

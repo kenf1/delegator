@@ -1,4 +1,4 @@
-GET http://localhost:8080/tasks
+GET http://localhost:8080/tasks/get
 
 HTTP 200
 

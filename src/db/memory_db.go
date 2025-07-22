@@ -1,4 +1,4 @@
-package test
+package db
 
 import "github.com/kenf1/delegator/src/models"
 
