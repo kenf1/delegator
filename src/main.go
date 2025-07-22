@@ -25,6 +25,9 @@ func main() {
 	mux.HandleFunc("PUT /tasks", routes.PutTask)
 	mux.HandleFunc("PATCH /tasks", routes.PatchTask)
 
+	mux.HandleFunc("GET /auth/{value}", routes.GenerateJWT)
+	mux.HandleFunc("GET /auth1/{value}", routes.DeconstructJWT)
+
 	fmt.Printf("Server listening to %s:%s\n", serverAddr.Host, serverAddr.Port)
 	err1 := http.ListenAndServe(":"+serverAddr.Port, mux)
 	if err1 != nil {
