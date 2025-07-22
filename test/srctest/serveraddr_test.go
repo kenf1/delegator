@@ -18,7 +18,9 @@ func TestImportServerAddrWrapper(t *testing.T) {
 			t.Fatalf("failed to write env file: %v", err)
 		}
 	}
-	defer os.Remove(envFile)
+	defer func() {
+		_ = os.Remove(envFile)
+	}()
 
 	tests := []struct {
 		name         string
@@ -64,19 +66,19 @@ func TestImportServerAddrWrapper(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			//clear env before each test
-			os.Unsetenv("HOST")
-			os.Unsetenv("PORT")
+			_ = os.Unsetenv("HOST")
+			_ = os.Unsetenv("PORT")
 
 			//set remote env vars
 			for k, v := range tt.remoteEnv {
-				os.Setenv(k, v)
+				_ = os.Setenv(k, v)
 			}
 
 			//ensure only nec .env present
 			if tt.localEnvFile != "" {
 				writeEnvFile(tt.localEnvFile)
 			} else {
-				os.Remove(envFile)
+				_ = os.Remove(envFile)
 			}
 
 			got, err := configs.ImportServerAddrWrapper(envFile)
@@ -88,9 +90,9 @@ func TestImportServerAddrWrapper(t *testing.T) {
 				t.Errorf("ImportServerAddrWrapper() = %+v, want %+v", got, tt.want)
 			}
 
-			os.Unsetenv("HOST")
-			os.Unsetenv("PORT")
-			os.Remove(envFile)
+			_ = os.Unsetenv("HOST")
+			_ = os.Unsetenv("PORT")
+			_ = os.Remove(envFile)
 		})
 	}
 }

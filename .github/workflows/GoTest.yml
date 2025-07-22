@@ -22,11 +22,11 @@ jobs:
           go-version: stable
 
       - name: Install dependencies
-        run: go get .
+        run: go mod tidy
 
       #optional, confirm builds successfully
       - name: Build
         run: go build -v ./...
 
       - name: Test
-        run: cd test/all_src_tests && go test
+        run: cd test/srctest && go test

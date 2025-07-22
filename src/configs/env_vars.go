@@ -10,12 +10,18 @@ import (
 
 func loadEnvFile(env_file string) error {
 	//clear prior env vars
-	os.Unsetenv("HOST")
-	os.Unsetenv("PORT")
-
-	err := godotenv.Load(env_file)
+	err := os.Unsetenv("HOST")
 	if err != nil {
 		return err
+	}
+	err1 := os.Unsetenv("PORT")
+	if err1 != nil {
+		return err1
+	}
+
+	err2 := godotenv.Load(env_file)
+	if err2 != nil {
+		return err2
 	}
 
 	return nil

@@ -10,8 +10,8 @@ import (
 )
 
 func TestImportAuthConfig_Success(t *testing.T) {
-	os.Setenv("SECRET_KEY", "supersecret")
-	os.Setenv("ISSUER", "auth-service")
+	_ = os.Setenv("SECRET_KEY", "supersecret")
+	_ = os.Setenv("ISSUER", "auth-service")
 
 	config, err := configs.ImportAuthConfig()
 	assert.NoError(t, err)
@@ -20,8 +20,8 @@ func TestImportAuthConfig_Success(t *testing.T) {
 }
 
 func TestImportAuthConfig_MissingSecretKey(t *testing.T) {
-	os.Unsetenv("SECRET_KEY")
-	os.Setenv("ISSUER", "auth-service")
+	_ = os.Unsetenv("SECRET_KEY")
+	_ = os.Setenv("ISSUER", "auth-service")
 
 	config, err := configs.ImportAuthConfig()
 	assert.Error(t, err)
@@ -30,8 +30,8 @@ func TestImportAuthConfig_MissingSecretKey(t *testing.T) {
 }
 
 func TestImportAuthConfig_MissingIssuer(t *testing.T) {
-	os.Setenv("SECRET_KEY", "supersecret")
-	os.Unsetenv("ISSUER")
+	_ = os.Setenv("SECRET_KEY", "supersecret")
+	_ = os.Unsetenv("ISSUER")
 
 	config, err := configs.ImportAuthConfig()
 	assert.Error(t, err)

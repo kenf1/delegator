@@ -19,6 +19,7 @@ grs: #Use air for hot-reload
 
 lint:
 	golangci-lint run ./src
+	golangci-lint run ./test/srctest
 
 define run_test
 	cd test/$(1) && hurl --test *.hurl
