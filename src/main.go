@@ -10,7 +10,7 @@ import (
 )
 
 func main() {
-	serverAddr, err := io.ImportServerAddrWrapper("../.env")
+	serverAddr, err := io.ImportServerAddrWrapper(".env")
 	if err != nil {
 		log.Fatal(err)
 	}

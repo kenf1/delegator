@@ -1,4 +1,4 @@
-.PHONY: reset_tags grs lint \
+.PHONY: reset_tags clean grs lint \
 	test_jwt test_jwt_encode test_jwt_decode \
 	test_tasks_crud \
 	test
@@ -6,11 +6,14 @@
 reset_tags:
 	git tag -l | xargs git tag -d
 
-grs:
-	cd src && go run *.go
+clean: lint
+	rm -rf tmp
+
+grs: #Use air for hot-reload
+	go run src/*.go
 
 lint:
-	cd src && golangci-lint run
+	golangci-lint run ./src
 
 define run_test
 	cd test/$(1) && hurl --test *.hurl
