@@ -1,0 +1,32 @@
+name: Run tests
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+      - test
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: stable
+
+      - name: Install dependencies
+        run: go get .
+
+      #optional, confirm builds successfully
+      - name: Build
+        run: go build -v ./...
+
+      - name: Test
+        run: cd test/all_src_tests && go test
