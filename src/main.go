@@ -7,6 +7,7 @@ import (
 
 	"github.com/kenf1/delegator/src/io"
 	"github.com/kenf1/delegator/src/routes"
+	"github.com/kenf1/delegator/src/routes/middleware"
 )
 
 func main() {
@@ -22,8 +23,12 @@ func main() {
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", routes.HandleEntry)
-	mux.Handle("/auth/", http.StripPrefix("/auth", routes.AuthRoutes(globalAuthConfig)))
-	mux.Handle("/tasks/", http.StripPrefix("/tasks", routes.TasksRoutes()))
+	mux.Handle("/auth/", http.StripPrefix("/auth",
+		middleware.AuthCorsMiddleware(routes.AuthRoutes(globalAuthConfig))),
+	)
+	mux.Handle("/tasks/", http.StripPrefix("/tasks",
+		middleware.TasksCorsMiddleware(routes.TasksRoutes())),
+	)
 
 	fmt.Printf("Server listening to %s:%s\n", serverAddr.Host, serverAddr.Port)
 	err1 := http.ListenAndServe(":"+serverAddr.Port, mux)

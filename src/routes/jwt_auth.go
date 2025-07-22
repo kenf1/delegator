@@ -62,6 +62,7 @@ func AuthRoutes(authConfig models.AuthConfig) *http.ServeMux {
 	authMux := http.NewServeMux()
 
 	authMux.HandleFunc("POST /create", GenerateJWT(authConfig))
+	//todo: consider cors
 	if os.Getenv("DEPLOY_STATUS") == "dev" {
 		authMux.HandleFunc("GET /uncreate/{token}", DeconstructJWT(authConfig))
 	}

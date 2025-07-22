@@ -1,5 +1,6 @@
 .PHONY: reset_tags clean grs lint \
 	test_jwt test_jwt_encode test_jwt_decode \
+	test_cors \
 	test_tasks_crud \
 	test
 
@@ -29,6 +30,9 @@ test_jwt_decode:
 	cd test/jwt_auth && sh test_decode.sh
 
 test_jwt: test_jwt_encode test_jwt_decode
+
+test_cors:
+	cd test/cors && sh test_cors.sh
 
 test: test_tasks_crud test_jwt
 	cd test && hurl --test entry.hurl
