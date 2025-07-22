@@ -7,8 +7,8 @@ import (
 	"strings"
 
 	"github.com/google/uuid"
+	"github.com/kenf1/delegator/src/configs"
 	"github.com/kenf1/delegator/src/db"
-	"github.com/kenf1/delegator/src/io"
 	"github.com/kenf1/delegator/src/models"
 )
 
@@ -25,8 +25,8 @@ func CreateTask(w http.ResponseWriter, r *http.Request) {
 		Status: reqBody.Status,
 	}
 
-	io.TasksMutex.Lock()
-	defer io.TasksMutex.Unlock()
+	configs.TasksMutex.Lock()
+	defer configs.TasksMutex.Unlock()
 
 	db.Tasks = append(db.Tasks, newTask)
 
@@ -39,8 +39,8 @@ func CreateTask(w http.ResponseWriter, r *http.Request) {
 }
 
 func ReadAllTasks(w http.ResponseWriter, r *http.Request) {
-	io.TasksMutex.RLock()
-	defer io.TasksMutex.RUnlock()
+	configs.TasksMutex.RLock()
+	defer configs.TasksMutex.RUnlock()
 
 	//copy to prevent race condition
 	res := make([]models.TaskDBRow, len(db.Tasks))
@@ -56,8 +56,8 @@ func ReadAllTasks(w http.ResponseWriter, r *http.Request) {
 func ReadSingleTask(w http.ResponseWriter, r *http.Request) {
 	id := r.PathValue("id")
 
-	io.TasksMutex.RLock()
-	defer io.TasksMutex.RUnlock()
+	configs.TasksMutex.RLock()
+	defer configs.TasksMutex.RUnlock()
 
 	task, _, entryPresent := db.FindTaskByID(db.Tasks, id)
 	if !entryPresent {
@@ -79,8 +79,8 @@ func PutTask(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	io.TasksMutex.Lock()
-	defer io.TasksMutex.Unlock()
+	configs.TasksMutex.Lock()
+	defer configs.TasksMutex.Unlock()
 
 	_, index, entryPresent := db.FindTaskByID(db.Tasks, updatedTask.Id)
 	if !entryPresent {
@@ -105,8 +105,8 @@ func PatchTask(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	io.TasksMutex.Lock()
-	defer io.TasksMutex.Unlock()
+	configs.TasksMutex.Lock()
+	defer configs.TasksMutex.Unlock()
 
 	taskPointer, _, entryPresent := db.FindTaskByID(db.Tasks, id)
 	if !entryPresent {
@@ -142,8 +142,8 @@ func deleteByIndex(tasks []models.TaskDBRow, index int) ([]models.TaskDBRow, err
 func DeleteTask(w http.ResponseWriter, r *http.Request) {
 	id := r.PathValue("id")
 
-	io.TasksMutex.Lock()
-	defer io.TasksMutex.Unlock()
+	configs.TasksMutex.Lock()
+	defer configs.TasksMutex.Unlock()
 
 	_, index, entryPresent := db.FindTaskByID(db.Tasks, id)
 	if !entryPresent {

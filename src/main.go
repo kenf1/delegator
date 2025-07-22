@@ -5,18 +5,18 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/kenf1/delegator/src/io"
+	"github.com/kenf1/delegator/src/configs"
 	"github.com/kenf1/delegator/src/routes"
 	"github.com/kenf1/delegator/src/routes/middleware"
 )
 
 func main() {
-	serverAddr, err := io.ImportServerAddrWrapper(".env")
+	serverAddr, err := configs.ImportServerAddrWrapper(".env")
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	globalAuthConfig, err := io.ImportAuthConfig()
+	globalAuthConfig, err := configs.ImportAuthConfig()
 	if err != nil {
 		log.Fatal(err)
 	}

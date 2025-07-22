@@ -1,4 +1,4 @@
-package io
+package configs
 
 import (
 	"fmt"
@@ -9,6 +9,10 @@ import (
 )
 
 func loadEnvFile(env_file string) error {
+	//clear prior env vars
+	os.Unsetenv("HOST")
+	os.Unsetenv("PORT")
+
 	err := godotenv.Load(env_file)
 	if err != nil {
 		return err

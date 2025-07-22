@@ -1,11 +1,15 @@
-.PHONY: reset_tags clean grs lint \
+.PHONY: reset_tags update clean grs lint \
 	test_jwt test_jwt_encode test_jwt_decode \
 	test_cors \
 	test_tasks_crud \
+	test_src \
 	test
 
 reset_tags:
 	git tag -l | xargs git tag -d
+
+update:
+	go get -t -u ./...
 
 clean: lint
 	rm -rf tmp
@@ -34,6 +38,9 @@ test_jwt: test_jwt_encode test_jwt_decode
 test_cors:
 	$(call run_test,cors)
 
-test: test_tasks_crud test_jwt test_cors
+test_src:
+	cd test/all_src_tests && go test
+
+test: test_tasks_crud test_jwt test_cors test_src
 	cd test && hurl --test entry.hurl
 	echo "Complete"
