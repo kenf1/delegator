@@ -25,7 +25,9 @@ func GenerateJWT(authConfig models.AuthConfig) http.HandlerFunc {
 		}
 
 		w.Header().Set("Content-Type", "application/json")
-		if err := json.NewEncoder(w).Encode(encodeResult); err != nil {
+
+		response := map[string]string{"token": encodeResult}
+		if err := json.NewEncoder(w).Encode(response); err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
@@ -43,7 +45,12 @@ func DeconstructJWT(authConfig models.AuthConfig) http.HandlerFunc {
 		}
 
 		w.Header().Set("Content-Type", "application/json")
-		if err := json.NewEncoder(w).Encode(decodeResult); err != nil {
+
+		response := map[string]interface{}{
+			"claims": decodeResult,
+		}
+
+		if err := json.NewEncoder(w).Encode(response); err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}

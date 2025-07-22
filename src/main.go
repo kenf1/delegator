@@ -24,9 +24,9 @@ func main() {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", routes.HandleEntry)
 
-	//jwt token: uncreate unavailable in prod
+	//jwt token
 	mux.HandleFunc("POST /auth/create", routes.GenerateJWT(globalAuthConfig))
-	mux.HandleFunc("POST /auth/uncreate/{token}", routes.DeconstructJWT(globalAuthConfig))
+	mux.HandleFunc("GET /auth/uncreate/{token}", routes.DeconstructJWT(globalAuthConfig))
 
 	//tasks: use in-memory database
 	mux.HandleFunc("GET /tasks", routes.ReadAllTasks)
