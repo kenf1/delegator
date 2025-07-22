@@ -3,6 +3,7 @@ package routes
 import (
 	"encoding/json"
 	"net/http"
+	"os"
 
 	"github.com/kenf1/delegator/src/auth"
 	"github.com/kenf1/delegator/src/models"
@@ -55,4 +56,15 @@ func DeconstructJWT(authConfig models.AuthConfig) http.HandlerFunc {
 			return
 		}
 	}
+}
+
+func AuthRoutes(authConfig models.AuthConfig) *http.ServeMux {
+	authMux := http.NewServeMux()
+
+	authMux.HandleFunc("POST /create", GenerateJWT(authConfig))
+	if os.Getenv("DEPLOY_STATUS") == "dev" {
+		authMux.HandleFunc("GET /uncreate/{token}", DeconstructJWT(authConfig))
+	}
+
+	return authMux
 }

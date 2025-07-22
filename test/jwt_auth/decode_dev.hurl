@@ -1,7 +1,7 @@
 GET http://localhost:8080/auth/uncreate/{{token}}
 Content-Type: application/json
 
-HTTP/1.1 200
+HTTP 200
 
 [Asserts]
 jsonpath "$.claims.Id"           exists

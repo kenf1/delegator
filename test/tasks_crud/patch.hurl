@@ -1,4 +1,4 @@
-PATCH http://localhost:8080/tasks
+PATCH http://localhost:8080/tasks/patch
 Content-Type: application/json
 
 {

@@ -1,5 +1,7 @@
 .PHONY: reset_tags grs lint \
-	test_tasks_crud
+	test_jwt test_jwt_encode test_jwt_decode \
+	test_tasks_crud \
+	test
 
 reset_tags:
 	git tag -l | xargs git tag -d
@@ -17,12 +19,14 @@ endef
 test_tasks_crud:
 	$(call run_test,tasks_crud)
 
-test_jwt:
+test_jwt_encode:
 	cd test/jwt_auth && hurl --test encode.hurl
 
 test_jwt_decode:
 	cd test/jwt_auth && sh test_decode.sh
 
-test: test_tasks_crud test_jwt #Run all hurl tests
+test_jwt: test_jwt_encode test_jwt_decode
+
+test: test_tasks_crud test_jwt
 	cd test && hurl --test entry.hurl
 	echo "Complete"

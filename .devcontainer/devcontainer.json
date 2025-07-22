@@ -14,6 +14,7 @@
 				"esbenp.prettier-vscode"
 			],
 			"settings": {
+				"editor.formatOnSave": true,
 				"code-runner.enableAppInsights": false,
 				"chat.mcp.enabled": false,
 				"telemetry.editStats.enabled": false,

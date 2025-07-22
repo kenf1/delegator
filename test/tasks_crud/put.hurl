@@ -1,4 +1,4 @@
-PUT http://localhost:8080/tasks
+PUT http://localhost:8080/tasks/put
 Content-Type: application/json
 
 {

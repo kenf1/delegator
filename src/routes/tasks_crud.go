@@ -160,3 +160,16 @@ func DeleteTask(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusNoContent)
 }
+
+func TasksRoutes() *http.ServeMux {
+	tasksMux := http.NewServeMux()
+
+	tasksMux.HandleFunc("GET /get", ReadAllTasks)
+	tasksMux.HandleFunc("GET /get/{id}", ReadSingleTask)
+	tasksMux.HandleFunc("POST /create", CreateTask)
+	tasksMux.HandleFunc("DELETE /delete/{id}", DeleteTask)
+	tasksMux.HandleFunc("PUT /put", PutTask)
+	tasksMux.HandleFunc("PATCH /patch", PatchTask)
+
+	return tasksMux
+}
