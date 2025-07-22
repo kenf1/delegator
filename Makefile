@@ -39,7 +39,7 @@ test_cors:
 	$(call run_test,cors)
 
 test_src:
-	cd test/all_src_tests && go test
+	cd test/srctest && go test
 
 test: test_tasks_crud test_jwt test_cors test_src
 	cd test && hurl --test entry.hurl

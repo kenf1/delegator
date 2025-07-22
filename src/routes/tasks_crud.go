@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/google/uuid"
+	"github.com/kenf1/delegator/src/auth"
 	"github.com/kenf1/delegator/src/configs"
 	"github.com/kenf1/delegator/src/db"
 	"github.com/kenf1/delegator/src/models"
@@ -54,7 +55,11 @@ func ReadAllTasks(w http.ResponseWriter, r *http.Request) {
 }
 
 func ReadSingleTask(w http.ResponseWriter, r *http.Request) {
-	id := r.PathValue("id")
+	id, err := auth.SanitizeQueryParam(r.PathValue("id"))
+	if err != nil {
+		http.Error(w, "entry not found", http.StatusBadRequest)
+		return
+	}
 
 	configs.TasksMutex.RLock()
 	defer configs.TasksMutex.RUnlock()
@@ -140,7 +145,11 @@ func deleteByIndex(tasks []models.TaskDBRow, index int) ([]models.TaskDBRow, err
 }
 
 func DeleteTask(w http.ResponseWriter, r *http.Request) {
-	id := r.PathValue("id")
+	id, err := auth.SanitizeQueryParam(r.PathValue("id"))
+	if err != nil {
+		http.Error(w, "entry not found", http.StatusBadRequest)
+		return
+	}
 
 	configs.TasksMutex.Lock()
 	defer configs.TasksMutex.Unlock()
@@ -151,9 +160,9 @@ func DeleteTask(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var err error
-	db.Tasks, err = deleteByIndex(db.Tasks, index)
-	if err != nil {
+	var err1 error
+	db.Tasks, err1 = deleteByIndex(db.Tasks, index)
+	if err1 != nil {
 		http.Error(w, "failed to delete task", http.StatusInternalServerError)
 		return
 	}

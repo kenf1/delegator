@@ -1,4 +1,4 @@
-package testauth
+package srctest
 
 import (
 	"os"
