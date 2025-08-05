@@ -9,6 +9,18 @@ import (
 	"github.com/kenf1/delegator/src/models"
 )
 
+// GenerateJWT
+//
+//	@Summary		Generate a JWT token
+//	@Description	Accepts user information and authentication config, returns a JWT token if successful.
+//	@Tags			Auth
+//	@Accept			json
+//	@Produce		json
+//	@Param			userInfo	body		models.UserInfo	true	"User credentials for token generation"
+//	@Success		200		{object}	map[string]string	"JWT token returned as JSON {'token': '...'}"
+//	@Failure		400		{string}	string				"Invalid JSON body"
+//	@Failure		500		{string}	string				"Failed to generate token"
+//	@Router			/auth/token [post]
 func GenerateJWT(authConfig models.AuthConfig) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var userInfo models.UserInfo
@@ -35,6 +47,17 @@ func GenerateJWT(authConfig models.AuthConfig) http.HandlerFunc {
 	}
 }
 
+// DeconstructJWT
+//
+//	@Summary		Decode a JWT token
+//	@Description	Decodes the JWT token provided as a path parameter and returns the claims.
+//	@Tags			Auth
+//	@Produce		json
+//	@Param			token	path		string	true	"JWT token to decode"
+//	@Success		200		{object}	map[string]interface{}	"Decoded JWT claims"
+//	@Failure		400		{string}	string	"Invalid or missing token"
+//	@Failure		500		{string}	string	"Failed to decode token"
+//	@Router			/auth/decode/{token} [get]
 func DeconstructJWT(authConfig models.AuthConfig) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		inputToken := r.PathValue("token")

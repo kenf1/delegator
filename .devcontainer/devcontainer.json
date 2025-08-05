@@ -10,7 +10,6 @@
 				"golang.go",
 				"formulahendry.code-runner",
 				"gxl.git-graph-3",
-				"yzhang.markdown-all-in-one",
 				"esbenp.prettier-vscode"
 			],
 			"settings": {

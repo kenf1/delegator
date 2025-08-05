@@ -6,9 +6,10 @@ on:
     branches:
       - main
       - test
+  pull_request:
 
 jobs:
-  test:
+  gotest:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

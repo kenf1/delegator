@@ -1,0 +1,297 @@
+definitions:
+  models.PatchRequest:
+    properties:
+      id:
+        description: required
+        type: string
+      status:
+        type: string
+      task:
+        type: string
+    type: object
+  models.TaskDBRow:
+    properties:
+      id:
+        description: uuid string
+        type: string
+      status:
+        type: string
+      task:
+        type: string
+    type: object
+  models.TaskRequest:
+    properties:
+      status:
+        type: string
+      task:
+        type: string
+    type: object
+  models.UserInfo:
+    properties:
+      email:
+        type: string
+      id:
+        type: string
+      org_id:
+        type: integer
+      permissions:
+        items:
+          type: string
+        type: array
+      roles:
+        items:
+          type: string
+        type: array
+    type: object
+info:
+  contact:
+    name: kenf1
+    url: http://www.github.com/kenf1
+  description: Delegator aka microservices entrypoint
+  license:
+    name: GNU GPLv3
+    url: https://www.gnu.org/licenses/gpl-3.0.en.html
+  termsOfService: http://swagger.io/terms/
+  title: Delegator
+  version: "1.0"
+paths:
+  /:
+    get:
+      description: Simple health-check or greeting endpoint.
+      produces:
+      - text/plain
+      responses:
+        "200":
+          description: Delegator entrypoint
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      summary: Delegator entrypoint
+      tags:
+      - General
+  /auth/decode/{token}:
+    get:
+      description: Decodes the JWT token provided as a path parameter and returns
+        the claims.
+      parameters:
+      - description: JWT token to decode
+        in: path
+        name: token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Decoded JWT claims
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid or missing token
+          schema:
+            type: string
+        "500":
+          description: Failed to decode token
+          schema:
+            type: string
+      summary: Decode a JWT token
+      tags:
+      - Auth
+  /auth/token:
+    post:
+      consumes:
+      - application/json
+      description: Accepts user information and authentication config, returns a JWT
+        token if successful.
+      parameters:
+      - description: User credentials for token generation
+        in: body
+        name: userInfo
+        required: true
+        schema:
+          $ref: '#/definitions/models.UserInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'JWT token returned as JSON {''token'': ''...''}'
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Invalid JSON body
+          schema:
+            type: string
+        "500":
+          description: Failed to generate token
+          schema:
+            type: string
+      summary: Generate a JWT token
+      tags:
+      - Auth
+  /tasks:
+    get:
+      description: Returns a list of all tasks currently stored.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of tasks
+          schema:
+            items:
+              $ref: '#/definitions/models.TaskDBRow'
+            type: array
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      summary: Retrieve all existing tasks
+      tags:
+      - Tasks
+    patch:
+      consumes:
+      - application/json
+      description: Update one or more fields of a task by providing JSON with the
+        task ID and fields to change.
+      parameters:
+      - description: Partial task update request including task ID
+        in: body
+        name: patch
+        required: true
+        schema:
+          $ref: '#/definitions/models.PatchRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Updated task returned in response
+          schema:
+            $ref: '#/definitions/models.TaskDBRow'
+        "400":
+          description: Invalid JSON body or missing 'id' field
+          schema:
+            type: string
+        "404":
+          description: Task not found
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      summary: Partially update an existing task
+      tags:
+      - Tasks
+    post:
+      consumes:
+      - application/json
+      description: Create a new task from JSON body. Returns the created task row.
+      parameters:
+      - description: Task creation request body
+        in: body
+        name: TaskRequest
+        required: true
+        schema:
+          $ref: '#/definitions/models.TaskRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Successfully created task
+          schema:
+            $ref: '#/definitions/models.TaskDBRow'
+        "400":
+          description: Invalid request body
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      summary: Create new task
+      tags:
+      - Tasks
+    put:
+      consumes:
+      - application/json
+      description: Updates a task by ID using JSON body data.
+      parameters:
+      - description: Updated task data with existing ID
+        in: body
+        name: TaskDBRow
+        required: true
+        schema:
+          $ref: '#/definitions/models.TaskDBRow'
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: Task updated successfully; no content returned
+        "400":
+          description: Invalid JSON body or task not found
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      summary: Update an existing task
+      tags:
+      - Tasks
+  /tasks/{id}:
+    delete:
+      description: Deletes the task identified by the given ID.
+      parameters:
+      - description: Task ID to delete
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: Task deleted successfully; no content returned
+        "400":
+          description: Entry not found or invalid ID
+          schema:
+            type: string
+        "500":
+          description: Failed to delete task due to server error
+          schema:
+            type: string
+      summary: Delete a task by ID
+      tags:
+      - Tasks
+    get:
+      description: Fetches a task entry by its unique ID from the database.
+      parameters:
+      - description: Task ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Task found and returned successfully
+          schema:
+            $ref: '#/definitions/models.TaskDBRow'
+        "400":
+          description: Entry not found or invalid ID
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      summary: Get a single task by ID
+      tags:
+      - Tasks
+swagger: "2.0"

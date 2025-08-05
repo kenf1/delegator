@@ -13,6 +13,18 @@ import (
 	"github.com/kenf1/delegator/src/models"
 )
 
+// CreateTask
+//
+//	@Summary		Create new task
+//	@Description	Create a new task from JSON body. Returns the created task row.
+//	@Tags			Tasks
+//	@Accept			json
+//	@Produce		json
+//	@Param			TaskRequest	body	models.TaskRequest	true	"Task creation request body"
+//	@Success		201	{object}	models.TaskDBRow	"Successfully created task"
+//	@Failure		400	{string}	string	"Invalid request body"
+//	@Failure		500	{string}	string	"Internal server error"
+//	@Router			/tasks [post]
 func CreateTask(w http.ResponseWriter, r *http.Request) {
 	var reqBody models.TaskRequest
 	if err := json.NewDecoder(r.Body).Decode(&reqBody); err != nil {
@@ -39,6 +51,15 @@ func CreateTask(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// ReadAllTasks
+//
+//	@Summary		Retrieve all existing tasks
+//	@Description	Returns a list of all tasks currently stored.
+//	@Tags			Tasks
+//	@Produce		json
+//	@Success		200	{array}		models.TaskDBRow	"List of tasks"
+//	@Failure		500	{string}	string				"Internal server error"
+//	@Router			/tasks [get]
 func ReadAllTasks(w http.ResponseWriter, r *http.Request) {
 	configs.TasksMutex.RLock()
 	defer configs.TasksMutex.RUnlock()
@@ -54,6 +75,17 @@ func ReadAllTasks(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// ReadSingleTask
+//
+//	@Summary		Get a single task by ID
+//	@Description	Fetches a task entry by its unique ID from the database.
+//	@Tags			Tasks
+//	@Produce		json
+//	@Param			id	path		string	true	"Task ID"
+//	@Success		200	{object}	models.TaskDBRow	"Task found and returned successfully"
+//	@Failure		400	{string}	string	"Entry not found or invalid ID"
+//	@Failure		500	{string}	string	"Internal server error"
+//	@Router			/tasks/{id} [get]
 func ReadSingleTask(w http.ResponseWriter, r *http.Request) {
 	id, err := auth.SanitizeQueryParam(r.PathValue("id"))
 	if err != nil {
@@ -77,6 +109,18 @@ func ReadSingleTask(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// PutTask
+//
+//	@Summary		Update an existing task
+//	@Description	Updates a task by ID using JSON body data.
+//	@Tags			Tasks
+//	@Accept			json
+//	@Produce		json
+//	@Param			TaskDBRow	body		models.TaskDBRow	true	"Updated task data with existing ID"
+//	@Success		204	"Task updated successfully; no content returned"
+//	@Failure		400	{string}	string	"Invalid JSON body or task not found"
+//	@Failure		500	{string}	string	"Internal server error"
+//	@Router			/tasks [put]
 func PutTask(w http.ResponseWriter, r *http.Request) {
 	var updatedTask models.TaskDBRow
 	if err := json.NewDecoder(r.Body).Decode(&updatedTask); err != nil {
@@ -97,6 +141,19 @@ func PutTask(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNoContent)
 }
 
+// PatchTask
+//
+//	@Summary		Partially update an existing task
+//	@Description	Update one or more fields of a task by providing JSON with the task ID and fields to change.
+//	@Tags			Tasks
+//	@Accept			json
+//	@Produce		json
+//	@Param			patch	body		models.PatchRequest	true	"Partial task update request including task ID"
+//	@Success		200		{object}	models.TaskDBRow	"Updated task returned in response"
+//	@Failure		400		{string}	string	"Invalid JSON body or missing 'id' field"
+//	@Failure		404		{string}	string	"Task not found"
+//	@Failure		500		{string}	string	"Internal server error"
+//	@Router			/tasks [patch]
 func PatchTask(w http.ResponseWriter, r *http.Request) {
 	var patch models.PatchRequest
 	if err := json.NewDecoder(r.Body).Decode(&patch); err != nil {
@@ -144,6 +201,17 @@ func deleteByIndex(tasks []models.TaskDBRow, index int) ([]models.TaskDBRow, err
 	return append(tasks[:index], tasks[index+1:]...), nil
 }
 
+// DeleteTask
+//
+//	@Summary		Delete a task by ID
+//	@Description	Deletes the task identified by the given ID.
+//	@Tags			Tasks
+//	@Produce		json
+//	@Param			id		path		string	true	"Task ID to delete"
+//	@Success		204		"Task deleted successfully; no content returned"
+//	@Failure		400		{string}	string	"Entry not found or invalid ID"
+//	@Failure		500		{string}	string	"Failed to delete task due to server error"
+//	@Router			/tasks/{id} [delete]
 func DeleteTask(w http.ResponseWriter, r *http.Request) {
 	id, err := auth.SanitizeQueryParam(r.PathValue("id"))
 	if err != nil {

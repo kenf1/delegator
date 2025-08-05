@@ -11,10 +11,12 @@ reset_tags:
 update:
 	go get -t -u ./...
 
-clean: lint
+clean: lint update
+	swag init -g src/*.go
 	rm -rf tmp
 
-grs: #Use air for hot-reload
+grs: #No hot-reload, re-build swagger docs
+	swag init -g src/*.go
 	go run src/*.go
 
 lint:
