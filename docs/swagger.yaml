@@ -1,0 +1,26 @@
+info:
+  contact:
+    name: kenf1
+    url: http://www.github.com/kenf1
+  description: Delegator aka microservices entrypoint
+  license:
+    name: GNU GPLv3
+    url: https://www.gnu.org/licenses/gpl-3.0.en.html
+  termsOfService: http://swagger.io/terms/
+  title: Delegator
+  version: "1.0"
+paths:
+  /demo:
+    get:
+      description: Shows first 10 rows from `MENS_SINGLES` dataset
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: Read all tasks
+      tags:
+      - Rankings
+swagger: "2.0"

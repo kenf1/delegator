@@ -15,6 +15,7 @@ clean: lint
 	rm -rf tmp
 
 grs: #Use air for hot-reload
+	swag init -g src/*.go
 	go run src/*.go
 
 lint:

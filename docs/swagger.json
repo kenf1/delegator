@@ -1,0 +1,39 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "Delegator aka microservices entrypoint",
+        "title": "Delegator",
+        "termsOfService": "http://swagger.io/terms/",
+        "contact": {
+            "name": "kenf1",
+            "url": "http://www.github.com/kenf1"
+        },
+        "license": {
+            "name": "GNU GPLv3",
+            "url": "https://www.gnu.org/licenses/gpl-3.0.en.html"
+        },
+        "version": "1.0"
+    },
+    "paths": {
+        "/demo": {
+            "get": {
+                "description": "Shows first 10 rows from `MENS_SINGLES` dataset",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Rankings"
+                ],
+                "summary": "Read all tasks",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
